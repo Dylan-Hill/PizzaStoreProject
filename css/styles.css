@@ -1,0 +1,16 @@
+.nav navbar-nav {
+	border-radius: none !important;
+}
+
+.container {
+    margin-top: 30vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
