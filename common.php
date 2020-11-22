@@ -1,33 +1,28 @@
 <?php
 
-function dbConnect()
-{
+// create db constants
+define("servername", "localhost");
+define("username", "project_user");
+define("password", "Windows1");
+define("database", "pizza_store");
 
-    // create db constants
-    define("servername", "localhost");
-    define("username", "project_user");
-    define("password", "Windows1");
-    define("database", "pizza_store");
-
-    // connect to db with PDO
-    // use try/catch for error handling
-    try {
-        $conn = new PDO("mysql:host=" . servername . ";dbname=" . database . ";charset=utf8", username, password);
-        // set the PDO error mode to exception
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        // echo "Connected successfully";
-    } catch (PDOException $e) {
-        echo "Connection failed: " . $e->getMessage();
-    }
-
-    return $conn;
+// connect to db with PDO
+// use try/catch for error handling
+try {
+    $conn = new PDO("mysql:host=" . servername . ";dbname=" . database . ";charset=utf8", username, password);
+    // set the PDO error mode to exception
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // echo "Connected successfully";
+} catch (PDOException $e) {
+    echo "Connection failed: " . $e->getMessage();
 }
 
 function assignUser()
 {
+    global $conn;
     $email = $_POST['emailInput'];
     $sqlSel = "SELECT cust_email FROM customers WHERE (cust_email = " . "'" . $email . "'" . ");";
-    $sqlIn = "INSERT INTO customers (cust_email, cust_address) VALUES (" . "'" . $email . "'" . ", '123 Fake Address')";
+    $sqlIn = "INSERT INTO customers (cust_email, cust_address, province, city, postal) VALUES (" . "'" . $email . "'" . ", ''" . ", ''" . ", ''" . ", ''" . ");";
     $signedUser = [];
 
     $result = $conn->query($sqlSel);
