@@ -6,7 +6,7 @@
 */
 
 session_start();
-include 'common.php';
+include './common.php';
 
 // handle the pizza form data that was submitted in the last page: orderPizza.php
 
@@ -151,6 +151,7 @@ function gatherCustomerInfo(){
 // MAY NEED 2 VERSIONS with customer email || without email if they are not new user???? idk
 // AFTER VALIDATING FIELDS => push the customers order into the db
 function insertCustomer(){
+    GLOBAL $conn;
     // run validation before getting to SQL
     //  run validation if the customer info form has been filled out
     if (isset($_POST['submitInfo']))
@@ -265,30 +266,41 @@ function insertCustomer(){
                 }
             }
         }
+        echo"Session Ready for sql? ";   
+        var_dump($_SESSION);
+
+        // for ease of use . Data in session is already cleaned.
+        $email = htmlentities($_SESSION['loggedUser']);
+        $address = $_SESSION['address'];
+        $province = $_SESSION['province'];
+        $postalCode = $_SESSION['postalCode'];
+        // $phone = $_SESSION['phone'];
+        $city = $_SESSION['city'];
 
     // SQL
-    // $name != null && 
      // final check if variables are within length constraints & Also Not Null
      if (
-     $_SESSION['name'] != null
-     && $_SESSION['address'] != null 
-     && $_SESSION['city'] != null 
-     && $_SESSION['province'] != null 
-     && $_SESSION['postalCode'] != null 
-     && strlen($SESSION['name']) <= 50 
-     && strlen($SESSION['address']) <= 50 
-     && strlen($SESSION['city']) <= 128 
-     && strlen($SESSION['province']) <= 20
+     $name != null
+     && $address != null 
+     && $city != null 
+     && $province != null 
+     && $postalCode != null 
+     && strlen($name) <= 50 
+     && strlen($address) <= 50 
+     && strlen($city) <= 55 
+     && strlen($postalCode) < 8
      ){
- 
+        
+
          // attempt to insert sql if passes checks
          try
          { 
+             
              // Sql insert customer info statement
              $sql = 'INSERT INTO customers (cust_email, cust_address, province, city, postal ) VALUES (:email, :address, :province, :city, :postal);';
  
-             // prepare
-             $stmt = $dbc->prepare($sql);
+             // prepare  // $conn is NULL??
+             $stmt = $conn->prepare($sql);
  
              // execute
              $stmt->execute(
@@ -296,9 +308,8 @@ function insertCustomer(){
                  ":email" => $email, 
                  ":address" => $address, 
                  ":province" => $province,
-                 ":postal" => $postal, 
-                 ":phone" => $phone, 
-                 ":city" => $city
+                 ":city" => $city,
+                 ":postal" => $postalCode
                 ]
             );
  
