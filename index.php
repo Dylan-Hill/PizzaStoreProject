@@ -16,7 +16,8 @@
   <!-- Nav Menu -->
         <?php 
             include 'common.php';
-            echo showNavBar("Guest");
+
+        echo showNavBar("");
          ?>
     <!-- Main Box -->
     <div class="container">
