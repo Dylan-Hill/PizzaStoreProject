@@ -11,7 +11,7 @@ include 'common.php';
 // handle the pizza form data that was submitted in the last page: orderPizza.php
 
 // Greeting 
-echo "Welcome " . $_SESSION['username'];
+echo "Welcome " . $_SESSION['loggedUser'];
 
 if (isset($_POST['submitPizza'])){
     // TODO
@@ -74,7 +74,7 @@ if (isset($_POST['submitPizza'])){
 
 
 <body>
-<form method="POST" action="./userInformation.php"> 
+<form method="POST" action="./userInformation.php">
 
 <!-- NEEDS VALIDATION --> 
    <!-- Name -->
@@ -110,7 +110,7 @@ if (isset($_POST['submitPizza'])){
 // after the info form is submitted => handle the data, place it in Session superglobal 
 if (isset($_POST['submitInfo'])){
 
-    echo "We're even more almost done " . $_SESSION['username'];
+    echo "We're even more almost done " . $_SESSION['loggedUser'];
     
     $_SESSION['address'] = $_POST['address'];
     $_SESSION['city'] = $_POST['city'];

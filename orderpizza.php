@@ -38,7 +38,7 @@ if (isset($_POST['emailInput'])) {
     <input type="radio" id="female" name="dough" value="thinCrust">
       <label for="female">Thin Crust</label>
       <br>
-    <input type="radio" id="other" name="dough" value="thickCrust>
+    <input type="radio" id="other" name="dough" value="thickCrust">
       <label for="other">Thick Crust</label>
     
     <!-- Choose Sauce -->
@@ -66,13 +66,15 @@ if (isset($_POST['emailInput'])) {
     <input type="checkbox" name="toppings[]" value="Onions"> Onions 
 
     <!-- Choose Cheese Type -->
-    <h3>Choose Cheese Type: </h3><br>
-    <select name="cheese" id="">
+    <h3>Choose Cheese Type: </h3>
+    <select name="cheese" id="cheese">
       <option value="Mozarella">Mozarella</option>
       <option value="Cheddar">Chedder</option>
       <option value="Havarti">Havarti</option>
     </select> 
     
+    <!-- Add Another Pizza -->
+    <br>
     <input type="number" name="addPizza" min="1" max="5"> Add another pizza?
     <br>
 
