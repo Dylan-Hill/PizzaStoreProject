@@ -1,6 +1,5 @@
 /* Commands:
-   use pizza_store
-*/ 
+*/ use pizza_store
 /* source script.sql 
 */
 

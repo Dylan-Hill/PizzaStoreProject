@@ -5,8 +5,9 @@
     Make all fields madatory and include validation 
 */
 
+session_start();
 include 'common.php';
-    
+
 // handle the pizza form data that was submitted in the last page: orderPizza.php
 
 // Greeting 
@@ -111,17 +112,16 @@ if (isset($_POST['submitInfo'])){
 
     echo "We're even more almost done " . $_SESSION['username'];
     
-    $_SESSION['name'] = $_POST['name'];
     $_SESSION['address'] = $_POST['address'];
     $_SESSION['city'] = $_POST['city'];
     $_SESSION['province'] = $_POST['province'];
     $_SESSION['postalCode'] = $_POST['postalCode'];
 
     // debugging
-    // echo "Post: \n";
-    // var_dump($_POST);
-    // echo "Session: \n";
-    // var_dump($_SESSION);
+    echo "Post: \n";
+    var_dump($_POST);
+    echo "Session: \n";
+    var_dump($_SESSION);
 
     // session after userInfo
     // username
