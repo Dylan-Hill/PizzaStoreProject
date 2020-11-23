@@ -1,6 +1,8 @@
 /* Commands:
-*/ use pizza_store
-/* source script.sql 
+*/
+/*  use pizza_store
+*/
+/*  source script.sql 
 */
 
 DROP TABLE IF EXISTS customers;
@@ -34,6 +36,7 @@ CREATE TABLE pizza (
 
 	PRIMARY KEY(pizzaID)
 );
+
 
 DROP TABLE IF EXISTS pizzaOrders;
 CREATE TABLE pizzaOrders (
