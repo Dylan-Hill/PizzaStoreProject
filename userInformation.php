@@ -6,13 +6,14 @@
 */
 
 session_start();
-include './common.php';
 
 // handle the pizza form data that was submitted in the last page: orderPizza.php
 
 // Greeting 
 echo "Welcome " . $_SESSION['loggedUser'];
 
+
+//Returns $pizzaObject Declared and Initialized
 function gatherPizzaInfo(){
     if (isset($_POST['submitPizza'])){
         // TODO
@@ -30,10 +31,10 @@ function gatherPizzaInfo(){
         $_SESSION['pizzaCounter'] = (int)$_POST['addPizza']; // this doesn't add up 
         
         // new json formatted toppings array to insert in db.  
-        $toppings = json_encode($_POST[toppings]);
+        $toppings = json_encode($_POST['toppings']);
 
         // put the json toppings array into the session variable  
-        $_SESSION['toppings'] = $toppings; // this outputs an error. doesnt like how i handled the array[] prob needs another brackets[] somewhere 
+        $_SESSION['toppings'] = $toppings; //fixed error 
         
         // debugging
         // echo "Post: \n";
@@ -52,7 +53,10 @@ function gatherPizzaInfo(){
     }
 }
 
-gatherPizzaInfo();
+//Returns $pizzaObj Ready to go to db
+$pizzaObj = gatherPizzaInfo();
+    
+
 ?>
 
 <!DOCTYPE html>
@@ -110,6 +114,9 @@ gatherPizzaInfo();
 </form>
 
 <?php 
+
+global $conn;
+
 // after the info form is submitted => handle the data, place it in Session superglobal 
 function gatherCustomerInfo(){
     if (isset($_POST['submitInfo'])){
@@ -117,6 +124,7 @@ function gatherCustomerInfo(){
         echo "We're even more almost done " . $_SESSION['loggedUser'];
         
         // We do this later more safely.
+        $_SESSION['name'] = $_POST['name'];
         $_SESSION['address'] = $_POST['address'];
         $_SESSION['city'] = $_POST['city'];
         $_SESSION['province'] = $_POST['province'];
@@ -151,6 +159,9 @@ function gatherCustomerInfo(){
 // MAY NEED 2 VERSIONS with customer email || without email if they are not new user???? idk
 // AFTER VALIDATING FIELDS => push the customers order into the db
 function insertCustomer(){
+
+    include './common.php';
+
     GLOBAL $conn;
     // run validation before getting to SQL
     //  run validation if the customer info form has been filled out
@@ -297,7 +308,7 @@ function insertCustomer(){
          { 
              
              // Sql insert customer info statement
-             $sql = 'INSERT INTO customers (cust_email, cust_address, province, city, postal ) VALUES (:email, :address, :province, :city, :postal);';
+             $sql = 'INSERT INTO customers (cust_name, cust_email, cust_address, province, city, postal ) VALUES (:name, :email, :address, :province, :city, :postal);';
  
              // prepare  // $conn is NULL??
              $stmt = $conn->prepare($sql);
@@ -305,6 +316,7 @@ function insertCustomer(){
              // execute
              $stmt->execute(
                 [
+                 ":name" => $name,   
                  ":email" => $email, 
                  ":address" => $address, 
                  ":province" => $province,
@@ -334,6 +346,49 @@ function insertCustomer(){
     }
 }
 insertCustomer();
+
+function sendPizzaInfoToDb(){
+    global $conn;
+     // attempt to insert sql if passes checks
+         try
+         { 
+             // Sql insert customer info statement
+             $sql = 'INSERT INTO pizza (dough, cheese, sauce, toppings) VALUES (:dough, :cheese, :sauce, :toppings);';
+ 
+             // prepare  // $conn is NULL??
+             $stmt = $conn->prepare($sql);
+ 
+             // execute
+             $stmt->execute(
+                [
+                 ":dough" => $_SESSION['dough'],   
+                 ":cheese" => $_SESSION['cheese'], 
+                 ":sauce" => $_SESSION['sauce'], 
+                 ":toppings" => $_SESSION['toppings'],
+                ]
+            );
+ 
+             // success?
+             if ($stmt)
+             {
+                echo "Successfully inserted pizza info";
+             }
+             else if (!$stmt)
+             {
+                 echo "Failed inserting pizza info.";
+             }
+ 
+         }
+         catch(PDOException $e)
+         {
+             $message = $e->getMessage();
+             echo "Error:" . $message;
+             $return = "Fail message: " . $e->getMessage();
+         }
+}
+
+//Sends Pizza Db Object To Db
+sendPizzaInfoToDb();
 
 ?>
 

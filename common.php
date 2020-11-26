@@ -5,10 +5,11 @@ define("servername", "localhost");
 define("username", "project_user");
 define("password", "Windows1");
 define("database", "pizza_store");
-
+global $conn;
 // connect to db with PDO
 // use try/catch for error handling
 try {
+
     $conn = new PDO("mysql:host=" . servername . ";dbname=" . database . ";charset=utf8", username, password);
     // set the PDO error mode to exception
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -22,12 +23,14 @@ function assignUser()
     global $conn;
     $email = $_POST['emailInput'];
     $sqlSel = "SELECT cust_email FROM customers WHERE (cust_email = " . "'" . $email . "'" . ");";
-    $sqlIn = "INSERT INTO customers (cust_email, cust_email, cust_address, province, city, postal) VALUES (" . "'" . $email . "'" . ", ''" . ", ''" . ", ''" . ", ''" . ", ''" . ");";
+    $sqlIn = "INSERT INTO customers (cust_email, cust_name, cust_address, province, city, postal) VALUES (" . "'" . $email . "'" . ", ''" . ", ''" . ", ''" . ", ''" . ", ''" . ");";
     $signedUser = [];
 
     $result = $conn->query($sqlSel);
     if ($result->rowCount($sqlSel) == 0) {
-        $conn->query($sqlIn);
+        echo "New Customer Created but not added to Database...";
+        // Do not add to db yet until we have figured out how to store evrything with php arrays/objects
+        // $conn->query($sqlIn);
         // echo "Customer account created.";
     } elseif ($result->rowCount($sqlSel) == 1) {
         // echo "Welcome Back";
@@ -73,4 +76,7 @@ function endSession()
     // destroy the session
     session_destroy();
 }
+    
+
+
 ?>

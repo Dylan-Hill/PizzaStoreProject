@@ -3,7 +3,7 @@ session_start();
 
 include './common.php';
 if (isset($_POST['emailInput'])) {
-    $_SESSION["loggedUser"] = $_POST['emailInput']; 
+    // $_SESSION["loggedUser"] = $_POST['emailInput']; 
     $_SESSION["loggedUser"] = assignUser();
     showNavBar( $_SESSION["loggedUser"]);
 } else {

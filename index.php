@@ -14,10 +14,10 @@
 <body> 
 
   <!-- Nav Menu -->
-  <?php 
-    include './common.php';
-    echo showNavBar("Guest");
-  ?>
+        <?php 
+            include 'common.php';
+            echo showNavBar("Guest");
+         ?>
     <!-- Main Box -->
     <div class="container">
 	    <h1>Welcome to The Pizza Store!</h1>
