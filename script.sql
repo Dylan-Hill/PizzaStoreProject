@@ -1,6 +1,5 @@
 /* Commands:
-*/
-/*  use pizza_store
+     use pizza_store
 */
 /*  source script.sql 
 */
@@ -9,6 +8,7 @@ DROP TABLE IF EXISTS customers;
 CREATE TABLE customers (
     cust_id int NOT NULL AUTO_INCREMENT,
     cust_email varchar(255),
+	cust_name varchar(255),
     cust_address varchar(255), 
     province varchar(100),
     city varchar(150),
