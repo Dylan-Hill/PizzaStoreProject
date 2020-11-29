@@ -1,17 +1,6 @@
 <?php
 session_start();
-
 include './common.php';
-if (isset($_POST['emailInput'])) {
-    // $_SESSION["loggedUser"] = $_POST['emailInput']; 
-    $_SESSION["loggedUser"] = assignUser();
-    showNavBar( $_SESSION["loggedUser"]);
-} else {
-    // FIXME?
-    // if($_POST('emailInput') !== "") {
-    //     assignUser();
-    // }
-}
 ?>
 
 
@@ -39,7 +28,7 @@ if (isset($_POST['emailInput'])) {
     <input type="radio" id="female" name="dough" value="thinCrust">
       <label for="female">Thin Crust</label>
       <br>
-    <input type="radio" id="other" name="dough" value="thickCrust">
+    <input type="radio" id="other" name="dough" value="thickCrust" checked>
       <label for="other">Thick Crust</label>
     
     <!-- Choose Sauce -->
@@ -50,7 +39,7 @@ if (isset($_POST['emailInput'])) {
     <input type="radio" id="bbq" name="sauce" value="BBQ">
       <label for="bbq">BBQ</label>
       <br>
-    <input type="radio" id="alfredo" name="sauce" value="alfredo">
+    <input type="radio" id="alfredo" name="sauce" value="alfredo" checked>
       <label for="female">Alfredo</label>
       <br>
     <input type="radio" id="ranch" name="sauce" value="ranch">
@@ -58,18 +47,18 @@ if (isset($_POST['emailInput'])) {
     
       <!-- Choose Toppings -->
     <h3>Choose Toppings: </h3><br>    
-    <input type="checkbox" name="toppings[]" value="Peperoni"> Pepperoni
-    <input type="checkbox" name="toppings[]" value="Ham"> Ham
-    <input type="checkbox" name="toppings[]" value="Bacon"> Bacon
-    <input type="checkbox" name="toppings[]" value="Tomato"> Tomatoes
-    <input type="checkbox" name="toppings[]" value="GreenPeppers"> Green Peppers 
+    <input type="checkbox" name="toppings[]" value="Peperoni" checked> Pepperoni
+    <input type="checkbox" name="toppings[]" value="Ham" checked> Ham
+    <input type="checkbox" name="toppings[]" value="Bacon" checked> Bacon
+    <input type="checkbox" name="toppings[]" value="Tomato" checked> Tomatoes
+    <input type="checkbox" name="toppings[]" value="GreenPeppers" checked> Green Peppers 
     <input type="checkbox" name="toppings[]" value="Mushrooms"> Mushrooms 
     <input type="checkbox" name="toppings[]" value="Onions"> Onions 
 
     <!-- Choose Cheese Type -->
     <h3>Choose Cheese Type: </h3>
     <select name="cheese" id="cheese">
-      <option value="Mozarella">Mozarella</option>
+      <option value="Mozarella" checked>Mozarella</option>
       <option value="Cheddar">Chedder</option>
       <option value="Havarti">Havarti</option>
     </select> 

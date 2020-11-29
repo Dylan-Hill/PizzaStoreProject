@@ -30,12 +30,12 @@ DROP TABLE IF EXISTS `customers`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `customers` (
   `cust_id` int NOT NULL AUTO_INCREMENT,
-  `cust_email` varchar(255) DEFAULT NULL,
-  `cust_name` varchar(255) DEFAULT NULL,
-  `cust_address` varchar(255) DEFAULT NULL,
-  `province` varchar(100) DEFAULT NULL,
-  `city` varchar(150) DEFAULT NULL,
-  `postal` varchar(10) DEFAULT NULL,
+  `cust_email` varchar(255) NOT NULL,
+  `cust_name` varchar(255) NOT NULL,
+  `cust_address` varchar(255) NOT NULL,
+  `province` varchar(100) NOT NULL,
+  `city` varchar(150) NOT NULL,
+  `postal` varchar(10) NOT NULL,
   PRIMARY KEY (`cust_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -58,9 +58,11 @@ DROP TABLE IF EXISTS `orders`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `orders` (
   `orderID` int NOT NULL AUTO_INCREMENT,
-  `employeeID` int DEFAULT NULL,
-  `order_date` date DEFAULT NULL,
-  PRIMARY KEY (`orderID`)
+  `fk_cust_id` int NOT NULL,
+  `order_date` date NOT NULL,
+  PRIMARY KEY (`orderID`),
+  CONSTRAINT `const_id` FOREIGN KEY (`fk_cust_id`) REFERENCES `customers`(`cust_id`)
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -85,7 +87,7 @@ CREATE TABLE `pizza` (
   `dough` varchar(50) NOT NULL,
   `cheese` varchar(50) NOT NULL,
   `sauce` varchar(50) NOT NULL,
-  `toppings` json DEFAULT NULL,
+  `toppings` json,
   PRIMARY KEY (`pizzaID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -108,8 +110,8 @@ DROP TABLE IF EXISTS `pizzaOrders`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `pizzaOrders` (
   `polID` varchar(12) NOT NULL,
-  `orderID` int DEFAULT NULL,
-  `pizzaID` int DEFAULT NULL,
+  `orderID` int NOT NULL,
+  `pizzaID` int NOT NULL,
   PRIMARY KEY (`polID`),
   KEY `orderID` (`orderID`),
   KEY `pizzaID` (`pizzaID`),
