@@ -5,6 +5,9 @@ define("servername", "localhost");
 define("username", "project_user");
 define("password", "Windows1");
 define("database", "pizza_store");
+
+GLOBAL $email;
+
 global $conn;
 // connect to db with PDO
 // use try/catch for error handling
@@ -17,17 +20,15 @@ try {
     echo "Connection failed: " . $e->getMessage();
 }
 
-if (isset($_POST['emailInput']) && !isset($_SESSION['emailInput'])) { 
-    $_SESSION['emailInput'] = $_POST['emailInput'];
-}
+// 
+// if (isset($_POST['emailInput']) && !isset($_SESSION['emailInput'])) { 
+//     $_SESSION['emailInput'] = $_POST['emailInput'];
+// }
 
 function assignUser() {
-    global $conn;
-    var_dump($_POST);
-    var_dump($_SESSION);
+    global $conn, $email;
     
-    
-    $email = $_SESSION['emailInput']; 
+    $email = $_SESSION['emailInput'];
     
     $sqlSel = "SELECT cust_email FROM customers WHERE (cust_email = " . "'" . $email . "'" . ");";
     // $sqlIn = "INSERT INTO customers (cust_email, cust_name, cust_address, province, city, postal) VALUES (" . "'" . $_SESSION['emailInput'] . "'" . ", ''" . ", ''" . ", ''" . ", ''" . ", ''" . ");";
@@ -97,7 +98,9 @@ function endSession()
 // - The email used is used in assignUser() 
 // - showNavBar()
 if (isset($_POST['emailInput'])) {
-    // $_SESSION["loggedUser"] = $_POST['emailInput']; 
+    GLOBAL $email;
+    $email = $_POST['emailInput'];
+    $_SESSION["emailInput"] =  $_POST['emailInput'];
     $_SESSION["loggedUser"] = assignUser();
     showNavBar( $_SESSION["loggedUser"]);
 }
@@ -202,7 +205,6 @@ if (isset($_POST['submitPizza'])){
 // MAY NEED 2 VERSIONS with customer email || without email if they are not new user???? idk
 // AFTER VALIDATING FIELDS => push the customers order into the db
 function insertCustomer(){
-
     GLOBAL $conn;
     // debugging
     echo "insertcustomer(): post + session\n";
@@ -211,7 +213,7 @@ function insertCustomer(){
     
     // clean name and place in session 
     $name = trim($_POST['name']);
-    $SESSION['cust_name'] = htmlentities($name);
+    $_SESSION['cust_name'] = htmlentities($name);
 
     // clean address and place in session
     $address = trim($_POST['address']);
@@ -228,22 +230,21 @@ function insertCustomer(){
     // postalCode
     $postalCode = trim($_POST['postalCode']);
     $_SESSION['postalCode'] = htmlentities($postalCode);
-
-    // for ease of use . Data in session is already cleaned.
-    $email = $_SESSION['emailInput'];
+    
     $address = $_SESSION['address'];
     $province = $_SESSION['province'];
     $postalCode = $_SESSION['postalCode'];
     // $phone = $_SESSION['phone'];
     $city = $_SESSION['city'];
-
+    
+    $email = $_SESSION['emailInput'];
+    
     // SQL
      // final check if variables are within length constraints & Also Not Null
 
          // attempt to insert sql if passes checks
          try
          { 
-             
              // Sql insert customer info statement
              $sql = 'INSERT INTO customers (cust_name, cust_email, cust_address, province, city, postal ) VALUES (:name, :email, :address, :province, :city, :postal);';
  
@@ -287,6 +288,7 @@ if (isset($_POST['submitInfo'])){
     insertCustomer();
 }
 
+// session_destroy();
 
 // after submitting pizza form -> show navbar() on user info page 
 if (isset($_POST['submitPizza'])) {
@@ -336,11 +338,11 @@ function insertOrder(){
             // $count returns the total number of cust_id's in the db.
             // Sometimes that total # WONT = the last cust_id entered tho. Will need a more specific approach to snagging that id # 
             $count = $res->fetchColumn();
-            echo "rows in cust_id = ".  $count . "\n";
+            echo "rows in cust_id = ".  $count . "<br>";
 
 
-            $custEmail =  $_SESSION['emailInput'];
-            echo $custEmail;
+            //$custEmail =  $_SESSION['emailInput'];
+            // echo $custEmail;
             // Sql insert orders info - Date
             $sql = "INSERT INTO orders (fk_cust_id, order_date) 
                     VALUES($count, :date);";
