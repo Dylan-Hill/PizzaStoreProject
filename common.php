@@ -326,18 +326,29 @@ function insertOrder(){
      // attempt to insert sql if passes checks
          try
          {
-            // $currentEmail = $_SESSION['loginEmail'];
+            // when inserting the FK_cust_id: 
+            // the INT id NEEDS to be the last integer that was insered into the db. 
+            // So we make a variable that changes to fit that FK_cust_id_insert on each run. 
+            $sql = "SELECT COUNT(cust_id) FROM customers";
+            
+            $res = $conn->query($sql);
+            
+            // $count returns the total number of cust_id's in the db.
+            // Sometimes that total # WONT = the last cust_id entered tho. Will need a more specific approach to snagging that id # 
+            $count = $res->fetchColumn();
+            echo "rows in cust_id = ".  $count . "\n";
+
 
             $custEmail =  $_SESSION['emailInput'];
             echo $custEmail;
             // Sql insert orders info - Date
             $sql = "INSERT INTO orders (fk_cust_id, order_date) 
-                    VALUES(1, :date);";
+                    VALUES($count, :date);";
             
             $stmt = $conn->prepare($sql);
  
              // execute
-             $stmt->execute( 
+             $stmt->execute(
                 [
                     // "custEmail" => $custEmail, //  (SELECT cust_email FROM customers WHERE cust_email = WHERE cust_email = :custEmail LIMIT 1),
                     ":date" => date('Y-m-d H:i:s'),
