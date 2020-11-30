@@ -39,14 +39,13 @@ echo "Welcome " . $_SESSION['loggedUser'] . "\n";
 
 <!-- NEEDS VALIDATION --> 
    <!-- Name -->
-   <?php if($_SESSION['existingUser'] == true){echo "value=".$_SESSION['userName'];};?>
 <label for="name">Name:</label>
 <input type="text" placeholder="John Doe" size="20" id="name" name="name" <?php if($_SESSION['existingUser'] == true){echo "value=".$_SESSION['userName'];};?>></input>
 </br>
 
 <!-- Address -->
 <label for="address">Address: </label>
-<input type="text"  placeholder="123 Main St" id="address" name="address" <?php if($_SESSION['existingUser'] == true){echo "value=".$_SESSION['userAddress'];};?>></input>
+<input type="text"  placeholder="123 Main St" <?php if($_SESSION['existingUser'] == true){echo "value=".$_SESSION['userAddress'];};?> id="address" name="address"></input>
 
 </br>
 
