@@ -12,7 +12,7 @@
 
 <body> 
   <!-- Nav Menu -->
-<?php
+<?php  
   include './common.php';
   echo showNavBar("Guest");
 ?>

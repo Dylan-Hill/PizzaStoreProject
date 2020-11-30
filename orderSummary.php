@@ -30,16 +30,41 @@ include './common.php';
 </head>
 
 <body> 
-    <div id="container">
-        <div id="orderSummary">
-            <h1>Order Summary</h1>
+<!--  This is the generatied layout for when the php chain of functions run -->
+<!--
+
+<div id="container">
+
+    <div id="orderSummary">
+            <h1>Order Summary</h1> 
             
-            <!--Order output goes Here -->
-
-        </div>
-    </div>
-
-     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+            <div id='customer'> 
+           	    customerEmail has ordered </br>
+            
+            <div id="pizzaOutput> </div> 
+            	       Cheese: 
+            	       Dough: 
+            	       Sauce: 
+            	       Toppings:
+            </div>	   
+            
+            <div id="delivery">	   
+            	  <p id='delivery'>
+            	  And will be delivered in 40 mins to:
+            	  Street, City, Province
+            	  </p>
+-->
+            	  
+<!--  
+</div>
+    </div> 
+-->
+	<!--  Confirm button to move to next page -->
+	<form method="POST" action="./previousOrders.php">
+		<input type="submit" value="Confirm Order" name="confirm"></button>
+	</form>
+     
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 </body>
 

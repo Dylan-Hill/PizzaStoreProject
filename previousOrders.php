@@ -1,4 +1,4 @@
-<!-- Just copied from orderSummary which was copied from orderPizza.php may not be proper orderSummary page yet -->
+<!-- Just copied orderPizza.php may not be proper orderSummary page yet -->
 <!-- OrderSummary.php: 
     - Display pizza order summary. 
     - Data comes from DB
@@ -8,8 +8,6 @@
 -->
 
 <?php
-session_start();
-
 include './common.php';
 // echo" <br> Session Contains :";   
 // var_dump($_SESSION);
@@ -35,6 +33,7 @@ include './common.php';
             <h1>Previous Orders</h1>
             
             <!--Previous Order go Here -->
+            
 
         </div>
     </div>
@@ -45,5 +44,5 @@ include './common.php';
 
 </html>
 <?php 
-endSession();
+    endSession();
 ?>

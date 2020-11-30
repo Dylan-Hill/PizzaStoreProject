@@ -22,27 +22,27 @@ include './common.php';
     
     <!-- Choose Dough -->
     <h3>Choose Dough: </h3><br>
-    <input type="radio" id="male" name="dough" value="regular">
+    <input type="radio" id="male" name="dough" value="Regular">
       <label for="male">Regular</label>
       <br>
-    <input type="radio" id="female" name="dough" value="thinCrust">
+    <input type="radio" id="female" name="dough" value="ThinCrust">
       <label for="female">Thin Crust</label>
       <br>
-    <input type="radio" id="other" name="dough" value="thickCrust" checked>
+    <input type="radio" id="other" name="dough" value="ThickCrust" checked>
       <label for="other">Thick Crust</label>
     
     <!-- Choose Sauce -->
     <h3>Choose Sauce: </h3><br>
-    <input type="radio" id="normal" name="sauce" value="marinara">
+    <input type="radio" id="normal" name="sauce" value="Marinara">
       <label for="Marinara">Marinara</label>
       <br>
     <input type="radio" id="bbq" name="sauce" value="BBQ">
       <label for="bbq">BBQ</label>
       <br>
-    <input type="radio" id="alfredo" name="sauce" value="alfredo" checked>
+    <input type="radio" id="alfredo" name="sauce" value="Alfredo" checked>
       <label for="female">Alfredo</label>
       <br>
-    <input type="radio" id="ranch" name="sauce" value="ranch">
+    <input type="radio" id="ranch" name="sauce" value="Ranch">
       <label for="other">Ranch</label>
     
       <!-- Choose Toppings -->
@@ -58,9 +58,10 @@ include './common.php';
     <!-- Choose Cheese Type -->
     <h3>Choose Cheese Type: </h3>
     <select name="cheese" id="cheese">
-      <option value="Mozarella" checked>Mozarella</option>
-      <option value="Cheddar">Chedder</option>
+      <option value="Mozarella" checked>Mozzarella</option>
+      <option value="Cheddar">Cheddar</option>
       <option value="Havarti">Havarti</option>
+      <option value="Feta">Feta</option>
     </select> 
     
     <!-- Add Another Pizza -->

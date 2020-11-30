@@ -7,7 +7,6 @@
 session_start();
 include './common.php';
 
-
 // handle the pizza form data that was submitted in the last page: orderPizza.php
 // Greeting 
 echo "Welcome " . $_SESSION['loggedUser'] . "\n";
@@ -67,54 +66,6 @@ echo "Welcome " . $_SESSION['loggedUser'] . "\n";
 <input type="submit" value="Submit" name="submitInfo">
 
 </form>
-
-<?php 
-
-// global $conn;
-
-// Used for Debugging - Prototype f() 
-// after the info form is submitted => handle the data, place it in Session superglobal 
-// function gatherCustomerInfo(){
-//     if (isset($_POST['submitInfo'])){
-
-//         echo "We're even more almost done " . $_SESSION['loggedUser'];
-        
-//         // We do this later more safely.
-//         $_SESSION['name'] = $_POST['name'];
-//         $_SESSION['address'] = $_POST['address'];
-//         $_SESSION['city'] = $_POST['city'];
-//         $_SESSION['province'] = $_POST['province'];
-//         $_SESSION['postalCode'] = $_POST['postalCode'];
-
-//         // debugging
-//         echo "Post: \n";
-//         var_dump($_POST);
-//         echo "Session: \n";
-//         var_dump($_SESSION);
-
-//         // session after userInfo
-//         // username
-//         // dough 
-//         // sauce 
-//         // cheese 
-//         // toppings 
-//         // pizzaCounter
-//         // TODO if email wasnt in the db. User needs to enter Email  
-//         // name
-//         // address
-//         // city 
-//         // province 
-//         // postalCode
-//     } 
-// }
-// run function just created.
-// gatherCustomerInfo();
-
-
-
-
-?>
-
 
 </body>
 </html>

@@ -176,7 +176,7 @@ function sendPizzaInfoToDb(){
              // success?
              if ($stmt)
              {
-                echo "Successfully inserted pizza info";
+                echo "Successfully inserted pizza info </br>";
              }
              else if (!$stmt)
              {
@@ -207,9 +207,9 @@ if (isset($_POST['submitPizza'])){
 function insertCustomer(){
     GLOBAL $conn;
     // debugging
-    echo "insertcustomer(): post + session\n";
-    var_dump($_POST);
-    var_dump($_SESSION);
+        // echo "insertcustomer(): post + session\n";
+        // var_dump($_POST);
+        // var_dump($_SESSION);
     
     // clean name and place in session 
     $name = trim($_POST['name']);
@@ -289,7 +289,6 @@ if (isset($_POST['submitInfo'])){
 }
 
 // session_destroy();
-
 // after submitting pizza form -> show navbar() on user info page 
 if (isset($_POST['submitPizza'])) {
     // $_SESSION["loggedUser"] = $_POST['emailInput'];
@@ -306,42 +305,20 @@ function insertOrder(){
     global $conn;
 
     // debugging 
-    var_dump($_POST); 
-    var_dump($_SESSION); 
-
-    // FIXME
-    // when inserting into order table: 
-    // on insertion orders.employeeID == NULL. 
-    // Regardless if i push it as NULL on purpose so it picks up the relationship so im kinda confused. 
-    
-    // Cheat Fix: Do we change the Type on orders.employeeID from INT to Varchar and manually insert $_SESSION['emailInput'] AKA user email? 
-    
-    // Or keep it as an int and figure out the relationship. 
-    // Steps: 1.) Pizza gets pushed. 2.) Customer gets pushed. 
-    //  3.) ORDER "SHOULD" HAVE access to email / customerID from the foreign key relationship by this step, 
-    // but when you insert the order: date is good. but employeeID == NULL  
-
-    // FIX $name insertion. Problem with DB relationship? idk 
-    // $name = "";
-    // $name = $_SESSION['inputEmail'];
+    //var_dump($_POST); 
+    // var_dump($_SESSION); 
 
      // attempt to insert sql if passes checks
          try
          {
             // when inserting the FK_cust_id: 
             // the INT id NEEDS to be the last integer that was insered into the db. 
-            // So we make a variable that changes to fit that FK_cust_id_insert on each run. 
+            // So we make a variable that changes to fit that FK_cust_id_insert on each run by searching for the MAX(cust_id). 
             $sql = "SELECT MAX(cust_id) FROM customers";
             $res = $conn->query($sql);
-            
-            // $count returns the total number of cust_id's in the db.
-            // Sometimes that total # WONT = the last cust_id entered tho. Will need a more specific approach to snagging that id # 
             $count = $res->fetchColumn();
-            echo "highest id in cust = ".  $count . "<br>";
+            // echo "highest id in cust = ".  $count . "<br>";
 
-
-            //$custEmail =  $_SESSION['emailInput'];
-            // echo $custEmail;
             // Sql insert orders info - Date
             $sql = "INSERT INTO orders (fk_cust_id, order_date) 
                     VALUES($count, :date);";
@@ -359,7 +336,7 @@ function insertOrder(){
              // success?
              if ($stmt)
              {
-                echo "Successfully inserted Order info \n";
+                echo "<p>Successfully inserted Order info</p></br>";
                 outputOrderSummary();
                 
                 
@@ -382,15 +359,16 @@ function insertOrder(){
 // Email + Address + Pizza info
 function outputOrderSummary(){
     global $conn;
+    
     //  Email - object? Guess its not a string
     // return 1 single email that was last entered // can be more precise by adding WHERE cust_email = $_SESSION['emailInput'] ? 
     $email = $conn->query(
         "SELECT cust_email FROM customers  
          WHERE cust_id = (
-            SELECT MAX(cust_id) 
+            SELECT MAX(cust_id)
 	        FROM customers) 
         LIMIT 1;"
-        )->fetch();
+        )->fetch(PDO::FETCH_ASSOC);
     
     // Pizza - Object
         $pizza = $conn->query(
@@ -399,32 +377,65 @@ function outputOrderSummary(){
              WHERE pizzaID = 
                 (SELECT MAX(pizzaID) 
                  FROM pizza);
-            ")->fetchAll();
+            ")->fetchAll(PDO::FETCH_ASSOC);
             
-        
+      
     // Address - Object OR multiple single strings each with own variable [address, city, postal, province]
        $address = $conn->query(
-        "SELECT cust_address, city, postal, province  FROM customers  WHERE
-        cust_id = (SELECT MAX(cust_id)
+        "SELECT cust_address, city, postal, province  
+        FROM customers  
+        WHERE cust_id =
+            (SELECT MAX(cust_id)
             FROM customers) LIMIT 1; 
-        ")->fetchAll();
+        ")->fetchAll(PDO::FETCH_ASSOC);
        
-    // output The sql variables   
-    // use the $email & $address & $pizza
-    echo $email . " has ordered </br>"; 
     
-    // trying to output the $pizza like this since it shows 
-    foreach($pizza as $row) {
-        echo $row . "</br>"; 
-    }
-    
-    echo "</br>" . "And will be delivered in 40 minutes to ";
-    foreach($address as $row) {
-        echo $row . "</br>";
-    }
-} // end of outputOrderSummary
+    // debugging
+        // var_dump($email);
+        // var_dump($pizza);
+        // var_dump($address);
+        
+    // Output The sql variables - ($email & $address & $pizza) 
+    // OUTPUT EMAIL
+    echo "<div id='container'>
+            <div id='orderSummary'>
+                <h1>Order Summary</h1>";
 
+    echo "<div id='customer'> ";
+    echo "Thank you " . $email['cust_email'] . " for placing an order. </br>";
+    echo "Your Pizza Order: </br> </div>";
+   
+    // output PIZZA
+    // extracting items from the pdo associative array. Surely theres a more efficient way to do this.
+    $cheese = $pizza[0]['cheese'];
+    $dough = $pizza[0]['dough'];
+    $sauce = $pizza[0]['sauce'];
+    $toppings = $pizza[0]['toppings'];
+    
+    echo "<div id='pizzaOutput'>
+      Cheese: " . $cheese 
+     . " </br> Dough: " . $dough 
+     . "</br> Sauce: " . $sauce 
+     . "</br> Toppings Include: " . $toppings 
+     . "</div>";
+    
+    // OUTPUT ADDRESS
+    $street =  $address[0]['cust_address'];
+    $city = $address[0]['city'];
+    $province = $address[0]['province'];
+    
+    echo "</br> <div id='delivery'> 
+          <p id='delivery'> The order will be delivered in approx. 40 minutes to: ";
+    echo "</br>" . $street. " , " . $city . ", " . $province;
+    echo "</div></div></div>";
+} // end of outputOrderSummary
 // run the outputOrderSummary after the customer + orderInsertion. within  function 
+
+// PREVIOUS ORDERS.php
+if(isset($_POST['confirm'])) {
+    // after confirmation of the order Summary :
+    // We want to go to the next page which displays all of the customers orders (SELECT * FROM orders )
+}
 
 
 // BOTTOM OF USEFUL FUNCTIONS 
