@@ -331,14 +331,13 @@ function insertOrder(){
             // when inserting the FK_cust_id: 
             // the INT id NEEDS to be the last integer that was insered into the db. 
             // So we make a variable that changes to fit that FK_cust_id_insert on each run. 
-            $sql = "SELECT COUNT(cust_id) FROM customers";
-            
+            $sql = "SELECT MAX(cust_id) FROM customers";
             $res = $conn->query($sql);
             
             // $count returns the total number of cust_id's in the db.
             // Sometimes that total # WONT = the last cust_id entered tho. Will need a more specific approach to snagging that id # 
             $count = $res->fetchColumn();
-            echo "rows in cust_id = ".  $count . "<br>";
+            echo "highest id in cust = ".  $count . "<br>";
 
 
             //$custEmail =  $_SESSION['emailInput'];
@@ -352,7 +351,7 @@ function insertOrder(){
              // execute
              $stmt->execute(
                 [
-                    // "custEmail" => $custEmail, //  (SELECT cust_email FROM customers WHERE cust_email = WHERE cust_email = :custEmail LIMIT 1),
+                    // ":count" => $count, //  (SELECT cust_email FROM customers WHERE cust_email = WHERE cust_email = :custEmail LIMIT 1),
                     ":date" => date('Y-m-d H:i:s'),
                 ]   
              );
@@ -361,6 +360,8 @@ function insertOrder(){
              if ($stmt)
              {
                 echo "Successfully inserted Order info \n";
+                outputOrderSummary();
+                
                 
              }
              else if (!$stmt)
@@ -375,11 +376,56 @@ function insertOrder(){
              echo "Error:" . $message;
              $return = "Fail message: " . $e->getMessage();
          }
-} // end of insertOrder() 
-// insert orderId + customer email into db after sending user Information form
-// if (isset($_SESSION['name'])){
-//     insertOrder();
-// }
+} // end of insertOrder() THIS f() is called within insertCustomer() if the SQL succeeds
+
+// Output the Previously submitted db information : 
+// Email + Address + Pizza info
+function outputOrderSummary(){
+    global $conn;
+    //  Email - object? Guess its not a string
+    // return 1 single email that was last entered // can be more precise by adding WHERE cust_email = $_SESSION['emailInput'] ? 
+    $email = $conn->query(
+        "SELECT cust_email FROM customers  
+         WHERE cust_id = (
+            SELECT MAX(cust_id) 
+	        FROM customers) 
+        LIMIT 1;"
+        )->fetch();
+    
+    // Pizza - Object
+        $pizza = $conn->query(
+            "SELECT * 
+             FROM pizza 
+             WHERE pizzaID = 
+                (SELECT MAX(pizzaID) 
+                 FROM pizza);
+            ")->fetchAll();
+            
+        
+    // Address - Object OR multiple single strings each with own variable [address, city, postal, province]
+       $address = $conn->query(
+        "SELECT cust_address, city, postal, province  FROM customers  WHERE
+        cust_id = (SELECT MAX(cust_id)
+            FROM customers) LIMIT 1; 
+        ")->fetchAll();
+       
+    // output The sql variables   
+    // use the $email & $address & $pizza
+    echo $email . " has ordered </br>"; 
+    
+    // trying to output the $pizza like this since it shows 
+    foreach($pizza as $row) {
+        echo $row . "</br>"; 
+    }
+    
+    echo "</br>" . "And will be delivered in 40 minutes to ";
+    foreach($address as $row) {
+        echo $row . "</br>";
+    }
+} // end of outputOrderSummary
+
+// run the outputOrderSummary after the customer + orderInsertion. within  function 
+
 
 // BOTTOM OF USEFUL FUNCTIONS 
 // TO DO - VALIDATION - WAS combined with user info . Seperating it
