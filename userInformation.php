@@ -33,12 +33,12 @@ echo "Welcome " . $_SESSION['loggedUser'] . "\n";
     crossorigin="anonymous">
 </head>
 
-
 <body>
 <form method="POST" action="./orderSummary.php">
 
 <!-- NEEDS VALIDATION --> 
    <!-- Name -->
+   <?php if($_SESSION['existingUser'] == true){echo "<b>Don't Worry ".$_SESSION['userName'] . ", You're remembered.</b></br>" ;};?>
 <label for="name">Name:</label>
 <input type="text" placeholder="John Doe" size="20" id="name" name="name" <?php if($_SESSION['existingUser'] == true){echo "value=".$_SESSION['userName'];};?>></input>
 </br>
@@ -60,7 +60,7 @@ echo "Welcome " . $_SESSION['loggedUser'] . "\n";
 
 <!-- Postal Code -->
 <label for="postalCode">Postal Code</label>
-<input type="text" placeholder="N0A 1M0" size="20" id="postalCode" name="postalCode" <?php if($_SESSION['existingUser'] == true){echo "value=".$_SESSION['userPostal'];};?>></input>
+<input type="text" placeholder="N0A 1M0" size="7" id="postalCode" name="postalCode" <?php if($_SESSION['existingUser'] == true){echo "value=".$_SESSION['userPostal'];};?>></input>
 </br></br>
 
 <!-- Submit -->

@@ -7,7 +7,7 @@ define("password", "Windows1");
 define("database", "pizza_store");
 
 GLOBAL $email;
-GLOBAL $existingUser;
+// GLOBAL $existingUser;
 
 global $conn;
 // connect to db with PDO
@@ -27,7 +27,7 @@ try {
 // }
 
 function assignUser() {
-    global $conn, $email, $existingUser;
+    global $conn, $email; // , $existingUser;
     
     $email = $_SESSION['emailInput'];
 
@@ -50,12 +50,11 @@ function assignUser() {
    // province 
    // postal 
     
-    
     if ($result->rowCount($sql) == 0) {
         // User does NOT exist.
         echo "New Customer Created but not added to Database...";
         $_SESSION['existingUser'] = false;
-        var_dump($_SESSION);
+        // var_dump($_SESSION);
         
     } elseif ($result->rowCount($sql) >= 1) {
         // USER EXISTS. Fetch their info
@@ -63,7 +62,7 @@ function assignUser() {
         $stmt = $conn->prepare("SELECT * FROM customers WHERE cust_email = ? LIMIT 1;");
         $stmt->execute( [$_SESSION['emailInput'] ] );
         $user = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        var_dump($user);
+        // var_dump($user);
         // print_r($user);
         
         $_SESSION['userID'] = $user[0]['cust_id'];
@@ -75,9 +74,9 @@ function assignUser() {
         $_SESSION['userPostal'] = $user[0]['postal'];
         $_SESSION['existingUser'] = true;
         
-        var_dump($_SESSION);
+        // var_dump($_SESSION);
         
-        echo "Welcome Back" . $_SESSION['userName'];
+        echo "Welcome Back " . $_SESSION['userName'] . " | " . $_SESSION['userEmail'];
     }
 
 
@@ -403,11 +402,11 @@ function insertOrder(){
     } // end of new user insert
     else if($_SESSION['existingUser'] == true){
         try{
-            //$sql = //"SELECT MAX(cust_id) FROM customers";
-            // $res = $conn->query($sql);
-            //$count = $res->fetchColumn();
+            $sql = "SELECT MAX(cust_id) FROM customers";
+            $res = $conn->query($sql);
+            $count = $res->fetchColumn();
             // echo "highest id in cust = ".  $count . "<br>";
-            
+            $_SESSION['userID'] = $count;
             // Sql insert orders info - Date
             $sql = "INSERT INTO orders (fk_cust_id, order_date)
                         VALUES(?, ?);";
@@ -417,7 +416,7 @@ function insertOrder(){
             // execute
             $stmt->execute(
                 [
-                    $_SESSION['userID'],// ":count" => $count, //  (SELECT cust_email FROM customers WHERE cust_email = WHERE cust_email = :custEmail LIMIT 1),
+                    $count,// ":count" => $count, //  (SELECT cust_email FROM customers WHERE cust_email = WHERE cust_email = :custEmail LIMIT 1),
                     date('Y-m-d H:i:s'),
                 ]
                 );
@@ -521,10 +520,52 @@ function outputOrderSummary(){
 } // end of outputOrderSummary
 // run the outputOrderSummary after the customer + orderInsertion. within  function 
 
-// PREVIOUS ORDERS.php
+// PREVIOUS ORDERS.php . if confirmOrder button is pressed: Show user all previous orders.
 if(isset($_POST['confirm'])) {
     // after confirmation of the order Summary :
     // We want to go to the next page which displays all of the customers orders (SELECT * FROM orders )
+    // var_dump($_SESSION);
+    try
+    {
+        // when inserting the FK_cust_id:
+        // the INT id NEEDS to be the last integer that was insered into the db.
+        // So we make a variable that changes to fit that FK_cust_id_insert on each run by searching for the MAX(cust_id).
+        //$sql = "SELECT * FROM orders WHERE fk_cust_id = ?";
+        // $res = $conn->query($sql);
+        // $count = $res->fetchColumn();
+        // echo "highest id in cust = ".  $count . "<br>";
+        
+        // Sql insert orders info - Date
+        $sql = "SELECT * FROM orders WHERE fk_cust_id = ?";
+        $stmt = $conn->prepare($sql);
+        
+        // execute
+        $stmt->execute(
+            [
+                $_SESSION['user'],
+            ]
+            );
+        
+        // success?
+        if ($stmt)
+        {
+            echo "<p>Successfully inserted Order info</p></br>";
+            outputOrderSummary();
+            
+            
+        }
+        else if (!$stmt)
+        {
+            echo "Failed inserting Order info. </br>";
+        }
+        
+    }
+    catch(PDOException $e)
+    {
+        $message = $e->getMessage();
+        echo "Error:" . $message;
+        $return = "Fail message: " . $e->getMessage();
+    }
 }
 
 
