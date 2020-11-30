@@ -7,6 +7,7 @@ define("password", "Windows1");
 define("database", "pizza_store");
 
 GLOBAL $email;
+GLOBAL $existingUser;
 
 global $conn;
 // connect to db with PDO
@@ -26,22 +27,57 @@ try {
 // }
 
 function assignUser() {
-    global $conn, $email;
+    global $conn, $email, $existingUser;
     
     $email = $_SESSION['emailInput'];
-    
-    $sqlSel = "SELECT cust_email FROM customers WHERE (cust_email = " . "'" . $email . "'" . ");";
-    // $sqlIn = "INSERT INTO customers (cust_email, cust_name, cust_address, province, city, postal) VALUES (" . "'" . $_SESSION['emailInput'] . "'" . ", ''" . ", ''" . ", ''" . ", ''" . ", ''" . ");";
-    $signedUser = [];
 
-    $result = $conn->query($sqlSel);
-    if ($result->rowCount($sqlSel) == 0) {
+    
+    $signedUser = [];
+    $sql = "SELECT * FROM customers 
+            WHERE cust_email = ?";
+    $result = $conn->prepare($sql);
+    $result->execute(
+        [$email,
+        ]
+        );
+    
+    
+    // get the variable to use later since this user info is relevant this session.
+   // cust_id *** NEED THIS SO WE CAN USE THIS INSTEAD OF MAX? Existing user (use the cust_id)Vs. New User. (insert Max cust_id for new user)
+   // cust_name 
+   // cust_address 
+   // city 
+   // province 
+   // postal 
+    
+    
+    if ($result->rowCount($sql) == 0) {
+        // User does NOT exist.
         echo "New Customer Created but not added to Database...";
-        // Do not add to db yet until we have figured out how to store evrything with php arrays/objects
-        // $conn->query($sqlIn);
-        // echo "Customer account created.";
-    } elseif ($result->rowCount($sqlSel) == 1) {
-        // echo "Welcome Back";
+        $_SESSION['existingUser'] = false;
+        var_dump($_SESSION);
+        
+    } elseif ($result->rowCount($sql) >= 1) {
+        // USER EXISTS. Fetch their info
+        
+        $stmt = $conn->prepare("SELECT * FROM customers WHERE cust_email = ? LIMIT 1;");
+        $stmt->execute( [$_SESSION['emailInput'] ] );
+        $user = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        var_dump($user);
+        // print_r($user);
+        
+        $_SESSION['userID'] = $user[0]['cust_id'];
+        $_SESSION['userEmail'] = $user[0]['cust_email'];
+        $_SESSION['userName'] = $user[0]['cust_name'];
+        $_SESSION['userAddress'] = $user[0]['cust_address'];
+        $_SESSION['userProvince'] = $user[0]['province'];
+        $_SESSION['userCity'] = $user[0]['city'];
+        $_SESSION['userPostal'] = $user[0]['postal'];
+        $_SESSION['existingUser'] = true;
+        
+        var_dump($_SESSION);
+        
+        echo "Welcome Back" . $_SESSION['userName'];
     }
 
 
@@ -211,76 +247,86 @@ function insertCustomer(){
         // var_dump($_POST);
         // var_dump($_SESSION);
     
-    // clean name and place in session 
-    $name = trim($_POST['name']);
-    $_SESSION['cust_name'] = htmlentities($name);
-
-    // clean address and place in session
-    $address = trim($_POST['address']);
-    $_SESSION['address'] = htmlentities($address);
-
-    // address
-    $city = trim($_POST['city']);
-    $_SESSION['city'] = htmlentities($city);
-
-    // province 
-    $province = trim($_POST['province']);
-    $_SESSION['province'] = htmlentities($province);
-
-    // postalCode
-    $postalCode = trim($_POST['postalCode']);
-    $_SESSION['postalCode'] = htmlentities($postalCode);
+    // insert new user
+   if ($_SESSION['existingUser'] = false) {
+        // clean name and place in session 
+        $name = trim($_POST['name']);
+        $_SESSION['cust_name'] = htmlentities($name);
     
-    $address = $_SESSION['address'];
-    $province = $_SESSION['province'];
-    $postalCode = $_SESSION['postalCode'];
-    // $phone = $_SESSION['phone'];
-    $city = $_SESSION['city'];
+        // clean address and place in session
+        $address = trim($_POST['address']);
+        $_SESSION['address'] = htmlentities($address);
     
-    $email = $_SESSION['emailInput'];
+        // address
+        $city = trim($_POST['city']);
+        $_SESSION['city'] = htmlentities($city);
     
-    // SQL
-     // final check if variables are within length constraints & Also Not Null
-
-         // attempt to insert sql if passes checks
-         try
-         { 
-             // Sql insert customer info statement
-             $sql = 'INSERT INTO customers (cust_name, cust_email, cust_address, province, city, postal ) VALUES (:name, :email, :address, :province, :city, :postal);';
- 
-             // prepare  // $conn is NULL??
-             $stmt = $conn->prepare($sql);
- 
-             // execute
-             $stmt->execute(
-                [
-                 ":name" => $name,   
-                 ":email" => $email,
-                 ":address" => $address, 
-                 ":province" => $province,
-                 ":city" => $city,
-                 ":postal" => $postalCode
-                ]
-            );
- 
-             // success?
-             if ($stmt)
-             {
-                echo "Successfully inserted Customer info. \n";
-                insertOrder();
+        // province 
+        $province = trim($_POST['province']);
+        $_SESSION['province'] = htmlentities($province);
+    
+        // postalCode
+        $postalCode = trim($_POST['postalCode']);
+        $_SESSION['postalCode'] = htmlentities($postalCode);
+        
+        $address = $_SESSION['address'];
+        $province = $_SESSION['province'];
+        $postalCode = $_SESSION['postalCode'];
+        // $phone = $_SESSION['phone'];
+        $city = $_SESSION['city'];
+        
+        $email = $_SESSION['emailInput'];
+        
+        // SQL
+         // final check if variables are within length constraints & Also Not Null
+    
+             // attempt to insert sql if passes checks
+             try
+             { 
+                 // Sql insert customer info statement
+                 $sql = 'INSERT INTO customers (cust_name, cust_email, cust_address, province, city, postal ) VALUES (:name, :email, :address, :province, :city, :postal);';
+     
+                 // prepare  // $conn is NULL??
+                 $stmt = $conn->prepare($sql);
+     
+                 // execute
+                 $stmt->execute(
+                    [
+                     ":name" => $name,   
+                     ":email" => $email,
+                     ":address" => $address, 
+                     ":province" => $province,
+                     ":city" => $city,
+                     ":postal" => $postalCode
+                    ]
+                );
+     
+                 // success?
+                 if ($stmt)
+                 {
+                    echo "Successfully inserted Customer info. \n";
+                    insertOrder();
+            
+                 }
+                 else if (!$stmt)
+                 {
+                     echo "Failed inserting Customer info. \n";
+                 }
+     
              }
-             else if (!$stmt)
+             catch(PDOException $e)
              {
-                 echo "Failed inserting Customer info. \n";
+                 $message = $e->getMessage();
+                 echo "Error:" . $message;
+                 $return = "Fail message: " . $e->getMessage();
              }
- 
-         }
-         catch(PDOException $e)
-         {
-             $message = $e->getMessage();
-             echo "Error:" . $message;
-             $return = "Fail message: " . $e->getMessage();
-         }
+        }
+        else if ($_SESSION['existingUser'] = true){
+            // no need to insert customer.
+            // but insert the existing customers pizza to db
+            insertOrder();
+            
+        }
 } // end of insertCustomer()
 
 // if userInformation form is filled out: insert it by running the function above   
@@ -302,12 +348,13 @@ if (isset($_POST['submitPizza'])) {
 // After Pizza & Order are in db => pizzaOrders is filled with its foreign key info
 // orderSummary.php will use the pizzaOrder data from db
 function insertOrder(){
+    
     global $conn;
 
     // debugging 
     //var_dump($_POST); 
     // var_dump($_SESSION); 
-
+    if ($_SESSION['existingUser'] == false) {
      // attempt to insert sql if passes checks
          try
          {
@@ -328,7 +375,7 @@ function insertOrder(){
              // execute
              $stmt->execute(
                 [
-                    // ":count" => $count, //  (SELECT cust_email FROM customers WHERE cust_email = WHERE cust_email = :custEmail LIMIT 1),
+                    ":count" => $count,
                     ":date" => date('Y-m-d H:i:s'),
                 ]   
              );
@@ -343,7 +390,7 @@ function insertOrder(){
              }
              else if (!$stmt)
              {
-                 echo "Failed inserting Order info. \n";
+                 echo "Failed inserting Order info. </br>";
              }
  
          }
@@ -353,7 +400,50 @@ function insertOrder(){
              echo "Error:" . $message;
              $return = "Fail message: " . $e->getMessage();
          }
+    } // end of new user insert
+    else if($_SESSION['existingUser'] == true){
+        try{
+            //$sql = //"SELECT MAX(cust_id) FROM customers";
+            // $res = $conn->query($sql);
+            //$count = $res->fetchColumn();
+            // echo "highest id in cust = ".  $count . "<br>";
+            
+            // Sql insert orders info - Date
+            $sql = "INSERT INTO orders (fk_cust_id, order_date)
+                        VALUES(?, ?);";
+            
+            $stmt = $conn->prepare($sql);
+            
+            // execute
+            $stmt->execute(
+                [
+                    $_SESSION['userID'],// ":count" => $count, //  (SELECT cust_email FROM customers WHERE cust_email = WHERE cust_email = :custEmail LIMIT 1),
+                    date('Y-m-d H:i:s'),
+                ]
+                );
+            // success?
+            if ($stmt)
+            {
+                echo "<p>Successfully inserted Order info</p></br>";
+                outputOrderSummary();
+                
+                
+            }
+            else if (!$stmt)
+            {
+                echo "Failed inserting Order info. </br>";
+            }
+            
+        }
+        catch(PDOException $e)
+        {
+            $message = $e->getMessage();
+            echo "Error:" . $message;
+            $return = "Fail message: " . $e->getMessage();
+        }
+    }
 } // end of insertOrder() THIS f() is called within insertCustomer() if the SQL succeeds
+
 
 // Output the Previously submitted db information : 
 // Email + Address + Pizza info

@@ -39,27 +39,29 @@ echo "Welcome " . $_SESSION['loggedUser'] . "\n";
 
 <!-- NEEDS VALIDATION --> 
    <!-- Name -->
+   <?php if($_SESSION['existingUser'] == true){echo "value=".$_SESSION['userName'];};?>
 <label for="name">Name:</label>
-<input type="text" placeholder="John Doe" size="20" id="name" name="name"></input>
+<input type="text" placeholder="John Doe" size="20" id="name" name="name" <?php if($_SESSION['existingUser'] == true){echo "value=".$_SESSION['userName'];};?>></input>
 </br>
 
 <!-- Address -->
 <label for="address">Address: </label>
-<input type="text"  placeholder="123 Main St" id="address" name="address"></input>
+<input type="text"  placeholder="123 Main St" id="address" name="address" <?php if($_SESSION['existingUser'] == true){echo "value=".$_SESSION['userAddress'];};?>></input>
+
 </br>
 
 <!-- City -->
 <label for="city">City: </label>
-<input type="text" placeholder="Toronto" size="25" id="city" name="city"></input>
+<input type="text" placeholder="Toronto" size="25" id="city" name="city" <?php if($_SESSION['existingUser'] == true){echo "value=".$_SESSION['userCity'];};?>></input>
 </br>
 <!-- Province -->
 <label for="province">Province</label>
-<input type="text" placeholder="Ontario" size="20" id="province" name="province"></input>
+<input type="text" placeholder="Ontario" size="20" id="province" name="province" <?php if($_SESSION['existingUser'] == true){echo "value=".$_SESSION['userProvince'];};?>></input>
 </br>
 
 <!-- Postal Code -->
 <label for="postalCode">Postal Code</label>
-<input type="text" placeholder="N0A 1M0" size="20" id="postalCode" name="postalCode"></input>
+<input type="text" placeholder="N0A 1M0" size="20" id="postalCode" name="postalCode" <?php if($_SESSION['existingUser'] == true){echo "value=".$_SESSION['userPostal'];};?>></input>
 </br></br>
 
 <!-- Submit -->
